@@ -17,7 +17,44 @@ SELECT
 	CAST(F.UnitPrice * F.Quantity * (1 - F.DiscountRate)AS DECIMAL(19,2)) [Net Sales Before Returns],
 	CAST(F.UnitCost *  F.Quantity AS DECIMAL(19,2))  COGS,
 	CAST(F.UnitPrice * F.Quantity * (1 - F.DiscountRate) - (F.Quantity * F.UnitCost) AS DECIMAL(19,2)) AS [Gross Profit Before Returns],
-	CAST(F.UnitPrice * F.Quantity * (1 - F.DiscountRate) - (F.Quantity * F.UnitCost)  /
-	NULLIF(F.Quantity * F.UnitPrice * (1 - F.DiscountRate),0) *100 AS DECIMAL(9,2)) [Gross MarginPct]
+	CAST(
+    (
+        F.UnitPrice * F.Quantity * (1 - F.DiscountRate)
+        - F.Quantity * F.UnitCost
+    )
+    / NULLIF(
+        F.Quantity * F.UnitPrice * (1 - F.DiscountRate),
+        0
+    ) * 100
+    AS DECIMAL(9,2)
+) AS [Gross MarginPct]
 
 FROM FactSales F
+
+--check view 
+/*
+
+SELECT TOP (10)
+    SalesLineID,
+    OrderID,
+    Quantity,
+    UnitPrice,
+    DiscountRate,
+    [Gross Sales],
+    [Discount Amount],
+    [Net Sales Before Returns],
+    COGS,
+    [Gross Profit Before Returns],
+    [Gross MarginPct]
+FROM dbo.vw_SalesAnalytics
+ORDER BY SalesLineID;
+
+
+-- Compare row counts
+SELECT
+    (SELECT COUNT_BIG(*)
+     FROM dbo.FactSales) AS FactSalesRows,
+
+    (SELECT COUNT_BIG(*)
+     FROM dbo.vw_SalesAnalytics) AS ViewRows;
+*/
