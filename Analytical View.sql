@@ -1,4 +1,4 @@
-CREATE VIEW dbo.vw_SalesAnalytics AS 
+CREATE OR ALTER VIEW dbo.vw_SalesAnalytics AS 
 SELECT 
 	F.SalesLineID,
 	F.OrderID,
@@ -58,3 +58,43 @@ SELECT
     (SELECT COUNT_BIG(*)
      FROM dbo.vw_SalesAnalytics) AS ViewRows;
 */
+
+/*
+SELECT TOP (10)
+    SalesLineID,
+    [Net Sales Before Returns],
+    [Gross Profit Before Returns],
+    [Gross MarginPct]
+FROM dbo.vw_SalesAnalytics
+ORDER BY SalesLineID;
+*/
+
+
+SELECT
+    COUNT_BIG(*) AS TotalSalesLines,
+    SUM(Quantity) AS TotalUnitsSold,
+
+    CAST(SUM([Gross Sales]) AS DECIMAL(19,2))
+        AS TotalGrossSales,
+
+    CAST(SUM([Discount Amount]) AS DECIMAL(19,2))
+        AS TotalDiscountAmount,
+
+    CAST(SUM([Net Sales Before Returns]) AS DECIMAL(19,2))
+        AS TotalNetSalesBeforeReturns,
+
+    CAST(SUM(COGS) AS DECIMAL(19,2))
+        AS TotalCOGS,
+
+    CAST(SUM([Gross Profit Before Returns]) AS DECIMAL(19,2))
+        AS TotalGrossProfitBeforeReturns,
+
+    CAST(
+        SUM([Gross Profit Before Returns])
+        / NULLIF(SUM([Net Sales Before Returns]), 0)
+        * 100
+        AS DECIMAL(9,2)
+    ) AS OverallGrossMarginPct
+
+FROM dbo.vw_SalesAnalytics;
+GO
