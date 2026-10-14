@@ -51,7 +51,7 @@ SELECT
 FROM dbo.vw_ReturnsAnalytics;
 GO
 
-
+--
 SELECT
     RR.ReasonCode,
     RR.ReasonName,
@@ -81,4 +81,32 @@ GROUP BY
 
 ORDER BY
     ReturnEvents DESC;
+GO
+
+--
+SELECT
+    D.CalendarYear,
+    D.MonthNumber,
+    D.MonthName,
+
+    COUNT_BIG(*)  ReturnEvents,
+    SUM(R.ReturnQuantity)  ReturnedUnits,
+
+    CAST(
+        SUM(R.RefundAmount)
+        AS DECIMAL(19,2)
+    ) AS TotalRefundAmount
+
+FROM dbo.vw_ReturnsAnalytics  R
+INNER JOIN dbo.DimDate  D
+    ON R.ReturnDateKey = D.DateKey
+
+GROUP BY
+    D.CalendarYear,
+    D.MonthNumber,
+    D.MonthName
+
+ORDER BY
+    D.CalendarYear,
+    D.MonthNumber;
 
