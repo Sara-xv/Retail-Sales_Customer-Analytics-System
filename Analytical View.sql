@@ -69,7 +69,6 @@ FROM dbo.vw_SalesAnalytics
 ORDER BY SalesLineID;
 */
 
-
 SELECT
     COUNT_BIG(*) AS TotalSalesLines,
     SUM(Quantity) AS TotalUnitsSold,
