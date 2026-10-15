@@ -208,3 +208,99 @@ GROUP BY
 ORDER BY
     GrossProfitAfterDiscount DESC;
 
+
+    
+SELECT
+    C.ChannelName,
+    COUNT_BIG(*) AS SalesLines,
+    COUNT(DISTINCT S.OrderID) AS DistinctOrders,
+    SUM(S.Quantity) AS UnitsSold,
+    CAST(
+        SUM(S.[Net Sales Before Returns])
+        AS DECIMAL(19, 2)
+    ) AS NetSalesBeforeReturns,
+    CAST(
+        SUM(S.[Gross Profit Before Returns])
+        AS DECIMAL(19, 2)
+    ) AS GrossProfitBeforeReturns,
+    CAST(
+        SUM(S.[Gross Profit Before Returns]) * 100.0
+        / NULLIF(SUM(S.[Net Sales Before Returns]), 0)
+        AS DECIMAL(6, 2)
+    ) AS GrossMarginPct
+FROM dbo.vw_SalesAnalytics AS S
+INNER JOIN dbo.DimChannel AS C
+    ON S.ChannelKey = C.ChannelKey
+GROUP BY
+    C.ChannelName
+ORDER BY
+    NetSalesBeforeReturns DESC;
+
+
+
+
+SELECT
+    C.ChannelName,
+    COUNT_BIG(*) AS SalesLines,
+    COUNT(DISTINCT S.OrderID) AS DistinctOrders,
+    SUM(S.Quantity) AS UnitsSold,
+    CAST(
+        SUM(S.[Net Sales Before Returns])
+        AS DECIMAL(19, 2)
+    ) AS NetSalesBeforeReturns,
+    CAST(
+        SUM(S.[Gross Profit Before Returns])
+        AS DECIMAL(19, 2)
+    ) AS GrossProfitBeforeReturns,
+    CAST(
+        SUM(S.[Gross Profit Before Returns]) * 100.0
+        / NULLIF(SUM(S.[Net Sales Before Returns]), 0)
+        AS DECIMAL(6, 2)
+    ) AS GrossMarginPct
+FROM dbo.vw_SalesAnalytics AS S
+INNER JOIN dbo.DimChannel AS C
+    ON S.ChannelKey = C.ChannelKey
+GROUP BY
+    C.ChannelName
+ORDER BY
+    NetSalesBeforeReturns DESC;
+
+
+
+
+SELECT
+    C.ChannelName,
+    CAST(
+        SUM(S.[Gross Sales])
+        AS DECIMAL(19, 2)
+    ) AS GrossSales,
+    CAST(
+        SUM(S.[Discount Amount])
+        AS DECIMAL(19, 2)
+    ) AS TotalDiscount,
+    CAST(
+        SUM(S.[Discount Amount]) * 100.0
+        / NULLIF(SUM(S.[Gross Sales]), 0)
+        AS DECIMAL(6, 2)
+    ) AS DiscountRatePct,
+    CAST(
+        SUM(S.[Net Sales Before Returns])
+        AS DECIMAL(19, 2)
+    ) AS NetSalesBeforeReturns,
+    CAST(
+        SUM(S.[Gross Profit Before Returns])
+        AS DECIMAL(19, 2)
+    ) AS GrossProfitBeforeReturns,
+    CAST(
+        SUM(S.[Gross Profit Before Returns]) * 100.0
+        / NULLIF(SUM(S.[Net Sales Before Returns]), 0)
+        AS DECIMAL(6, 2)
+    ) AS GrossMarginPct
+FROM dbo.vw_SalesAnalytics AS S
+INNER JOIN dbo.DimChannel AS C
+    ON S.ChannelKey = C.ChannelKey
+GROUP BY
+    C.ChannelName
+ORDER BY
+    DiscountRatePct DESC;
+
